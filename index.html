@@ -23,7 +23,7 @@
         <option value="soviet">Soviet/Russian</option>
     </select>
 
-    <button onclick="generateLoadout()">Generate Loadout</button>
+    <button id="generateButton">Generate Loadout</button>
 
     <div id="loadout"></div>
 
@@ -137,6 +137,9 @@
                 </ul>
             `;
         }
+
+        // Ensure the button event is attached after the DOM is loaded
+        document.getElementById('generateButton').addEventListener('click', generateLoadout);
     </script>
 </body>
 </html>
