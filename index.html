@@ -9,7 +9,7 @@
         button { padding: 10px 20px; margin-top: 20px; }
         #loadout { margin-top: 20px; }
         img { width: 100%; max-width: 400px; display: block; margin: 20px auto; }
-        select { padding: 10px; margin: 10px 0; }
+        select { padding: 10px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -17,80 +17,85 @@
 
     <img src="assets/military.gif">
 
-    <label for="faction">Select Faction:</label>
+    <label for="faction">Choose Faction:</label>
     <select id="faction">
-        <option value="western">Western</option>
-        <option value="soviet">Soviet/Russian</option>
+        <option value="Western">Western</option>
+        <option value="Soviet/Russian">Soviet/Russian</option>
     </select>
 
-    <button id="generateButton">Generate Loadout</button>
+    <button onclick="generateLoadout()">Generate Loadout</button>
 
     <div id="loadout"></div>
 
     <script>
-        // Western Loadout Data
-        const westernLoadout = {
-            helmets: [
-                "PASGT Helmet", "MICH Helmet", "Ops-Core FAST Helmet", "MK6 Helmet", "Gefechtshelm M92",
-                "Adrian Helmet", "Type 88 Helmet", "SPECTRA Helmet", "Dyneema Helmet", "Cobra Plus Helmet",
-                "CVC Helmet", "LWH Helmet", "Para Helmet", "MAROM Dolphin M1", "Armatus Ultralight Helmet",
+        const helmets = {
+            Western: [
+                "PASGT Helmet", "MICH Helmet", "Ops-Core FAST Helmet", "MK6 Helmet", 
+                "Gefechtshelm M92", "Adrian Helmet", "Type 88 Helmet", "SPECTRA Helmet", 
+                "Dyneema Helmet", "Cobra Plus Helmet", "CVC Helmet", "LWH Helmet", 
+                "Para Helmet", "MAROM Dolphin M1", "Armatus Ultralight Helmet", 
                 "ACH Helmet", "Striker ACH Helmet"
             ],
-            armor: [
-                "IOTV", "Osprey Body Armor", "D3O Trauma Plates", "Dragon Skin", "CIRAS Vest",
-                "RBA", "MTAR", "Flecktarn Vest", "KDH Defense Vest", "OTV Interceptor Vest",
-                "SOHPC", "LBV", "A-TACS FG Vest", "SBAV 2000 Vest", "Eagle Industries Plate Carrier"
+            Soviet: [
+                "SSh-68 Helmet", "ZSH-1-2M", "6B47 Ratnik Helmet", "Altyn Helmet", 
+                "K6-3 Helmet", "Maska-1Sch", "Sfera-S Helmet", "Vulkan-5 Helmet"
+            ]
+        };
+
+        const armor = {
+            Western: [
+                "IOTV", "Osprey Body Armor", "D3O Trauma Plates", "Dragon Skin", 
+                "CIRAS Vest", "RBA", "Flecktarn Vest", "KDH Defense Vest", 
+                "OTV Interceptor Vest", "SOHPC", "LBV", "A-TACS FG Vest", 
+                "SBAV 2000 Vest", "T65 Combat Armor", "Eagle Industries Plate Carrier"
             ],
-            clothes: [
-                "Multicam", "Flecktarn", "CADPAT", "MARPAT", "DPM", "AOR-1", "Tigerstripe", 
-                "UCP", "French CCE", "Desert DPM", "M81 Woodland", "A-TACS AU", "A-TACS FG"
+            Soviet: [
+                "6B45", "Fort Defender-2", "Ulan Tactical Vest", "6B23 Body Armor", 
+                "6B43 Body Armor", "Korund-VM Armor", "Pantsir-S1 Body Armor", 
+                "Ratnik-3 Suit"
+            ]
+        };
+
+        const primaryWeapons = {
+            Western: [
+                "M4 Carbine", "HK416", "FN SCAR", "Steyr AUG", "FAMAS F1", 
+                "Galil ACE", "L85A2", "SIG SG 550", "G36C", "Tavor TAR-21", 
+                "FN F2000", "HK G3", "ARX160", "CZ 805 BREN", "INSAS Rifle", "M16A4"
             ],
-            primaryWeapons: [
-                "M4 Carbine", "HK416", "FN SCAR", "Steyr AUG", "FAMAS F1", "L85A2", "SIG SG 550", 
-                "G36C", "Tavor TAR-21", "FN F2000", "HK G3", "ARX160", "CZ 805 BREN", "M16A4"
+            Soviet: [
+                "AK-47", "AK-103", "QBZ-95", "Zastava M70", "AK-12", "AN-94", 
+                "AS Val", "VSS Vintorez", "RPK-74", "PKP Pecheneg", "AKS-74U", 
+                "SKS", "PPSh-41", "SVT-40", "SVD Dragunov", "OTs-14 Groza"
+            ]
+        };
+
+        const secondaryWeapons = {
+            Western: [
+                "Glock 17", "M1911", "SIG Sauer P226", "Beretta M9", "CZ P-09", 
+                "Walther P99", "Desert Eagle", "FN Five-Seven", "Colt Python", 
+                "Smith & Wesson Model 29", "Browning Hi-Power", "H&K USP", 
+                "SIG Sauer P320", "Glock 19", "Jericho 941", "CZ 75", "Taurus PT92", "HK VP9"
             ],
-            secondaryWeapons: [
-                "Glock 17", "M1911", "SIG Sauer P226", "Beretta M9", "CZ P-09", "Walther P99", 
-                "Desert Eagle", "FN Five-Seven", "Colt Python", "Smith & Wesson Model 29", 
-                "Browning Hi-Power", "H&K USP", "SIG Sauer P320", "Glock 19"
-            ],
-            grenades: [
+            Soviet: [
+                "Stechkin APS", "Makarov PM", "Tokarev TT-33", "MP-443 Grach", 
+                "SR-1M Gyurza", "OTs-33 Pernach", "Nagant M1895", "PMM"
+            ]
+        };
+
+        const grenades = {
+            Western: [
                 "M67 Fragmentation Grenade", "Mk 2 'Pineapple'", "M18 Smoke Grenade", 
                 "M84 Flashbang", "HG 85 Grenade", "DM51 Grenade", "No. 36 Mills Bomb", 
-                "DM41 Fragmentation Grenade", "MK3 Offensive Grenade", "SFG87 Grenade", 
-                "L109A1", "K400 Smoke Grenade"
+                "ARGES 84", "AN-M8 HC Smoke Grenade", "DM41 Fragmentation Grenade", 
+                "Type 67 Fragmentation Grenade", "MK3 Offensive Grenade", 
+                "SFG87 Grenade", "L109A1", "K400 Smoke Grenade"
+            ],
+            Soviet: [
+                "RGD-5", "F1 Grenade", "RG-42 Fragmentation Grenade", "OF-37", 
+                "RGN Grenade", "RGO Grenade", "Zarya Flashbang", "K-51 Tear Gas Grenade"
             ]
         };
 
-        // Soviet/Russian Loadout Data
-        const sovietLoadout = {
-            helmets: [
-                "SSh-68 Helmet", "ZSH-1-2M", "6B47 Ratnik Helmet", "Altyn Helmet", "K6-3 Helmet", 
-                "Sfera-S Helmet"
-            ],
-            armor: [
-                "6B45 Ratnik Body Armor", "Fort Redut Body Armor", "6B23 Body Armor", "6B13 Body Armor", 
-                "Fort Defender-2", "Poyas-A Chest Rig", "Uley Tactical Vest"
-            ],
-            clothes: [
-                "Digital Flora", "Soviet TTsKO", "Partizan Camo", "Gorka Suit", "VKBO", 
-                "Soviet Afghanka Uniform"
-            ],
-            primaryWeapons: [
-                "AK-47", "AK-74", "AK-103", "RPK-74", "PKM", "Dragunov SVD", 
-                "AS Val", "VSS Vintorez", "AKS-74U", "Saiga-12"
-            ],
-            secondaryWeapons: [
-                "Makarov PM", "Stechkin APS", "Tokarev TT", "Grach MP-443", "OTs-38", 
-                "PB Silent Pistol", "SR-1M Gyurza"
-            ],
-            grenades: [
-                "RGD-5", "F1 Grenade", "RGO Fragmentation Grenade", "RGN Offensive Grenade", 
-                "RDG-2 Smoke Grenade", "Zarya-2 Flashbang", "RG-42 Fragmentation Grenade"
-            ]
-        };
-
-        // Shared gadgets between factions
         const gadgets = [
             "AN/PVS-14 Night Vision Goggles", "PRC-152 Radio", "GPS (Garmin Foretrex 601)", 
             "DR-10 UAV", "Flir Thermal Imager", "Laser Range Finder (Leica)", 
@@ -107,29 +112,19 @@
         }
 
         function generateLoadout() {
-            const faction = document.getElementById('faction').value;
-            let selectedLoadout;
-
-            if (faction === 'western') {
-                selectedLoadout = westernLoadout;
-            } else {
-                selectedLoadout = sovietLoadout;
-            }
-
-            const helmet = getRandomItem(selectedLoadout.helmets);
-            const bodyArmor = getRandomItem(selectedLoadout.armor);
-            const camoUniform = getRandomItem(selectedLoadout.clothes);
-            const primaryWeapon = getRandomItem(selectedLoadout.primaryWeapons);
-            const secondaryWeapon = getRandomItem(selectedLoadout.secondaryWeapons);
-            const grenade = getRandomItem(selectedLoadout.grenades);
-            const gadget = getRandomItem(gadgets);  // Gadgets are common to both factions
+            const faction = document.getElementById("faction").value;
+            const helmet = getRandomItem(helmets[faction === "Western" ? "Western" : "Soviet"]);
+            const bodyArmor = getRandomItem(armor[faction === "Western" ? "Western" : "Soviet"]);
+            const primaryWeapon = getRandomItem(primaryWeapons[faction === "Western" ? "Western" : "Soviet"]);
+            const secondaryWeapon = getRandomItem(secondaryWeapons[faction === "Western" ? "Western" : "Soviet"]);
+            const grenade = getRandomItem(grenades[faction === "Western" ? "Western" : "Soviet"]);
+            const gadget = getRandomItem(gadgets);
 
             document.getElementById("loadout").innerHTML = `
-                <h2>Your Random Loadout:</h2>
+                <h2>Your ${faction} Loadout:</h2>
                 <ul>
                     <li><strong>Helmet:</strong> ${helmet}</li>
                     <li><strong>Body Armor:</strong> ${bodyArmor}</li>
-                    <li><strong>Clothes:</strong> ${camoUniform}</li>
                     <li><strong>Primary Weapon:</strong> ${primaryWeapon}</li>
                     <li><strong>Secondary Weapon:</strong> ${secondaryWeapon}</li>
                     <li><strong>Grenade:</strong> ${grenade}</li>
@@ -137,9 +132,6 @@
                 </ul>
             `;
         }
-
-        // Ensure the button event is attached after the DOM is loaded
-        document.getElementById('generateButton').addEventListener('click', generateLoadout);
     </script>
 </body>
 </html>
