@@ -4,195 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Military Loadout Generator</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        button { padding: 10px 20px; margin-top: 20px; }
-        #loadout { margin-top: 20px; }
-        img { width: 100%; max-width: 400px; display: block; margin: 20px auto; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .loadout {
+            text-align: center;
+            margin-top: 20px;
+        }
+        select {
+            display: block;
+            margin: 0 auto 10px auto;
+            padding: 10px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
-    <h1>Random Military Loadout Generator</h1>
 
-    <label for="faction">Choose Faction:</label>
-    <select id="faction" onchange="updateFaction()">
+    <h1>Military Loadout Generator</h1>
+
+    <label for="equipmentPool">Select Equipment Pool:</label>
+    <select id="equipmentPool">
         <option value="western">Western</option>
-        <option value="soviet">Soviet</option>
+        <option value="soviet">Soviet/Russian</option>
     </select>
 
     <button onclick="generateLoadout()">Generate Loadout</button>
 
-    <div id="loadout"></div>
-    <canvas id="loadoutChart" width="400" height="200"></canvas>
+    <div class="loadout" id="loadout"></div>
 
     <script>
-        // Default faction
-        let currentFaction = 'western';
-
-        // Western Equipment Arrays (Post-WW2)
-        const westernHelmets = [
-            "MICH 2000 Helmet (USA)",
-            "ACH Helmet (USA)",
-            "Ops-Core Fast Helmet (USA)",
-            "PASGT Helmet (USA)",
-            "Fritz Helmet (Germany)",
-            "LWH Helmet (USA)"
-        ];
-
-        const westernArmor = [
-            "Interceptor Body Armor (USA)",
-            "IOTV (Improved Outer Tactical Vest) (USA)",
-            "PC (Plate Carrier) (USA)",
-            "Osprey Body Armor (UK)",
-            "Modular Tactical Vest (USA)"
-        ];
-
-        const westernClothes = [
-            "ACU (Army Combat Uniform) (USA)",
-            "MultiCam Uniform (USA)",
-            "OCP (Operational Camouflage Pattern) (USA)",
-            "Tropical Combat Uniform (UK)",
-            "Flecktarn Uniform (Germany)"
-        ];
-
-        const westernWeapons = [
-            "M4A1 Carbine (USA)",
-            "M16A4 Rifle (USA)",
-            "FN SCAR-L (Belgium)",
-            "G36 (Germany)",
-            "L85A2 Rifle (UK)"
-        ];
-
-        const westernSecondaryWeapons = [
-            "M1911A1 Pistol (USA)",
-            "SIG P226 (Switzerland)",
-            "Glock 19 (Austria)",
-            "Beretta M9 (Italy)",
-            "FN 509 (Belgium)"
-        ];
-
-        // Soviet Equipment Arrays (Post-WW2)
-        const sovietHelmets = [
-            "SSh-68 Helmet",
-            "SSh-40 Helmet",
-            "6B7 Helmet",
-            "Ratnik Helmet"
-        ];
-
-        const sovietArmor = [
-            "6B2 Body Armor",
-            "6B45 Body Armor",
-            "Padded Jacket (Soviet Union)",
-            "Gorka Uniform (Soviet Union)"
-        ];
-
-        const sovietClothes = [
-            "Gorka-3 Uniform",
-            "Telogreika (Padded Jacket)",
-            "Winter Combat Uniform (Soviet Union)",
-            "Desert Combat Uniform (Soviet Union)"
-        ];
-
-        const sovietWeapons = [
-            "AK-74M (Soviet Union)",
-            "AK-103 (Soviet Union)",
-            "SVDS Sniper Rifle (Soviet Union)",
-            "PKM Machine Gun (Soviet Union)",
-            "PP-19 Bizon (Soviet Union)"
-        ];
-
-        const sovietSecondaryWeapons = [
-            "Makarov PM (Soviet Union)",
-            "MP-443 Grach (Soviet Union)",
-            "TT-33 Tokarev (Soviet Union)",
-            "SR-1MP Gyurza (Soviet Union)"
-        ];
-
-        let loadoutData = {
-            labels: ['Helmet', 'Body Armor', 'Clothes', 'Primary Weapon', 'Secondary Weapon'],
-            data: Array(5).fill(0)  // Initialize an array to hold counts
+        const westernEquipment = {
+            primaryWeapons: ['M4 Carbine', 'HK416', 'FN SCAR', 'M16A4'],
+            secondaryWeapons: ['Glock 19', 'Sig Sauer P226', 'Beretta M9'],
+            gear: ['Kevlar Vest', 'Night Vision Goggles', 'Combat Boots', 'Tactical Helmet'],
+            accessories: ['Grenades', 'Flashbangs', 'Radio', 'First Aid Kit']
         };
 
-        const ctx = document.getElementById('loadoutChart').getContext('2d');
-        const loadoutChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: loadoutData.labels,
-                datasets: [{
-                    label: 'Loadout Count',
-                    data: loadoutData.data,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
+        const sovietEquipment = {
+            primaryWeapons: ['AK-47', 'AK-74', 'RPK', 'PKM'],
+            secondaryWeapons: ['Makarov PM', 'Tokarev TT', 'MP-443 Grach'],
+            gear: ['6B23 Body Armor', 'SPOSN Gorka Suit', 'Combat Boots', 'Pilotka Cap'],
+            accessories: ['RGD-5 Grenades', 'F1 Grenades', 'Radio', 'First Aid Kit']
+        };
 
-        function updateFaction() {
-            currentFaction = document.getElementById('faction').value;
-        }
-
-        function getRandomItem(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
+        function getRandomItem(array) {
+            return array[Math.floor(Math.random() * array.length)];
         }
 
         function generateLoadout() {
-            let helmet, bodyArmor, camoUniform, primaryWeapon, secondaryWeapon;
+            const equipmentPool = document.getElementById('equipmentPool').value;
+            let selectedEquipment;
 
-            if (currentFaction === 'western') {
-                helmet = getRandomItem(westernHelmets);
-                bodyArmor = getRandomItem(westernArmor);
-                camoUniform = getRandomItem(westernClothes);
-                primaryWeapon = getRandomItem(westernWeapons);
-                secondaryWeapon = getRandomItem(westernSecondaryWeapons);
-            } else { // Soviet
-                helmet = getRandomItem(sovietHelmets);
-                bodyArmor = getRandomItem(sovietArmor);
-                camoUniform = getRandomItem(sovietClothes);
-                primaryWeapon = getRandomItem(sovietWeapons);
-                secondaryWeapon = getRandomItem(sovietSecondaryWeapons);
+            if (equipmentPool === 'western') {
+                selectedEquipment = westernEquipment;
+            } else if (equipmentPool === 'soviet') {
+                selectedEquipment = sovietEquipment;
             }
 
-            // Update loadout counts
-            loadoutData.data[0] = helmet ? 1 : 0;
-            loadoutData.data[1] = bodyArmor ? 1 : 0;
-            loadoutData.data[2] = camoUniform ? 1 : 0;
-            loadoutData.data[3] = primaryWeapon ? 1 : 0;
-            loadoutData.data[4] = secondaryWeapon ? 1 : 0;
+            const primaryWeapon = getRandomItem(selectedEquipment.primaryWeapons);
+            const secondaryWeapon = getRandomItem(selectedEquipment.secondaryWeapons);
+            const gear = getRandomItem(selectedEquipment.gear);
+            const accessory = getRandomItem(selectedEquipment.accessories);
 
-            loadoutChart.update();  // Update the chart
-
-            document.getElementById("loadout").innerHTML = `
-                <h2>Your Random ${currentFaction === 'western' ? 'Western' : 'Soviet'} Loadout:</h2>
-                <ul>
-                    <li><strong>Helmet:</strong> ${helmet}</li>
-                    <li><strong>Body Armor:</strong> ${bodyArmor}</li>
-                    <li><strong>Clothes:</strong> ${camoUniform}</li>
-                    <li><strong>Primary Weapon:</strong> ${primaryWeapon}</li>
-                    <li><strong>Secondary Weapon:</strong> ${secondaryWeapon}</li>
-                </ul>
+            const loadout = `
+                <p><strong>Primary Weapon:</strong> ${primaryWeapon}</p>
+                <p><strong>Secondary Weapon:</strong> ${secondaryWeapon}</p>
+                <p><strong>Gear:</strong> ${gear}</p>
+                <p><strong>Accessory:</strong> ${accessory}</p>
             `;
+
+            document.getElementById('loadout').innerHTML = loadout;
         }
     </script>
+
 </body>
 </html>
