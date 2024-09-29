@@ -1,2 +1,2 @@
-# technical_musician.github.io
-A randomized loadout generator for any application you may use it for, like art, games, and more.
+# THIS IS A TESTING REPOSITORY FOR THE MAIN GENERATOR
+This is to test new feature for Glockodile's Random Military Loadout Generator
