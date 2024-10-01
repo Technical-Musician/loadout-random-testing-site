@@ -143,7 +143,6 @@
             }
         };
 
-
         function getRandomItem(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
@@ -151,24 +150,24 @@
         function generateLoadout() {
             const faction = document.getElementById("faction").value;
             const selectedClass = document.getElementById("class").value;
-        
+
             const helmet = getRandomItem(faction === "All" ? helmets.Western.concat(helmets.Soviet) : helmets[faction]);
             const bodyArmor = getRandomItem(faction === "All" ? armor.Western.concat(armor.Soviet) : armor[faction]);
             const primaryWeapon = getRandomItem(faction === "All" ? primaryWeapons.Western[selectedClass].concat(primaryWeapons.Soviet[selectedClass]) : primaryWeapons[faction][selectedClass]);
             const secondaryWeapon = getRandomItem(faction === "All" ? secondaryWeapons.Western.concat(secondaryWeapons.Soviet) : secondaryWeapons[faction === "Western" ? "Western" : "Soviet"]);
             const grenade = getRandomItem(faction === "All" ? grenades.Western.concat(grenades.Soviet) : grenades[faction]);
             const gadget = getRandomItem(faction === "All" ? gadgets.Western.concat(gadgets.Soviet) : gadgets[faction]);
-        
+
             let rocketLauncher = '';
             if (selectedClass === "Grenadier") {
                 rocketLauncher = getRandomItem(faction === "All" ? rocketLaunchers.Western.LightAT.concat(rocketLaunchers.Soviet.LightAT) : rocketLaunchers[faction].LightAT);
             } else if (selectedClass === "AntiTank") {
                 rocketLauncher = getRandomItem(faction === "All" ? rocketLaunchers.Western.HeavyAT.concat(rocketLaunchers.Soviet.HeavyAT) : rocketLaunchers[faction].HeavyAT);
             }
-        
+
             const camoUniform = getRandomItem(faction === "All" ? clothes.Western.concat(clothes.Soviet) : clothes[faction]);
             const style = getRandomItem(faction === "All" ? clothesStyle.Western.concat(clothesStyle.Soviet) : clothesStyle[faction]);
-        
+
             document.getElementById("loadout").innerHTML = `
                 <h2>Your ${faction === "All" ? "Mixed Faction" : faction} ${selectedClass} Loadout:</h2>
                 <ul>
@@ -184,3 +183,6 @@
                 </ul>
             `;
         }
+    </script>
+</body>
+</html>
