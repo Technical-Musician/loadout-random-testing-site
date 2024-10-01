@@ -71,15 +71,14 @@
         <option value="MachineGunner">Machine Gunner</option>
         <option value="Rifleman">Rifleman</option>
         <option value="Grenadier">Grenadier</option>
+        <option value="AntiTank">Anti-Tank</option> <!-- New class for Heavy AT -->
     </select>
     <br>
 
     <button onclick="generateLoadout()">Generate Loadout</button>
 
     <div id="loadout"></div>
-    
-    <img src="assets/cag.gif" alt="Military GIF">
-    
+
     <script>
         const helmets = {
             Western: ["PASGT Helmet", "MICH Helmet", "Ops-Core FAST Helmet", "MK6 Helmet", "Gefechtshelm M92"],
@@ -134,18 +133,18 @@
         const rocketLaunchers = {
             Western: {
                 LightAT: ["M72 LAW", "AT4", "Panzerfaust 3"],
-                HeavyAT: ["M47 Dragon", "Javelin", "Carl Gustaf M2", "NLAW"]
+                HeavyAT: ["M47 Dragon", "TOW Missile", "Carl Gustaf M2"]
             },
             Soviet: {
                 LightAT: ["RPG-18", "RPG-22", "RPG-26"],
-                HeavyAT: ["RPG-7", "RPG-29", "RPG-30"]
+                HeavyAT: ["RPG-7", "RPG-29", "SPG-9"]
             }
         };
-        
+
         function getRandomItem(arr) {
-                    return arr[Math.floor(Math.random() * arr.length)];
-        }:
-        
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
         function generateLoadout() {
             const faction = document.getElementById("faction").value;
             const selectedClass = document.getElementById("class").value;
@@ -156,11 +155,8 @@
             const secondaryWeapon = getRandomItem(faction === "All" ? secondaryWeapons.Western.concat(secondaryWeapons.Soviet) : secondaryWeapons[faction === "Western" ? "Western" : "Soviet"]);
             const grenade = getRandomItem(faction === "All" ? grenades.Western.concat(grenades.Soviet) : grenades[faction]);
             const gadget = getRandomItem(faction === "All" ? gadgets.Western.concat(gadgets.Soviet) : gadgets[faction]);
-            const camoUniform = getRandomItem(faction === "All" ? clothes.Western.concat(clothes.Soviet) : clothes[faction]);
-            const style = getRandomItem(faction === "All" ? clothesStyle.Western.concat(clothesStyle.Soviet) : clothesStyle[faction]);
 
             let rocketLauncher = '';
-
             if (selectedClass === "Grenadier") {
                 rocketLauncher = getRandomItem(faction === "All" 
                     ? rocketLaunchers.Western.LightAT.concat(rocketLaunchers.Soviet.LightAT) 
@@ -171,6 +167,9 @@
                     : rocketLaunchers[faction].HeavyAT);
             }
 
+            const camoUniform = getRandomItem(faction === "All" ? clothes.Western.concat(clothes.Soviet) : clothes[faction]);
+            const style = getRandomItem(faction === "All" ? clothesStyle.Western.concat(clothesStyle.Soviet) : clothesStyle[faction]);
+
             document.getElementById("loadout").innerHTML = `
                 <h2>Your ${faction === "All" ? "Mixed Faction" : faction} ${selectedClass} Loadout:</h2>
                 <ul>
@@ -178,9 +177,9 @@
                     <li><strong>Body Armor:</strong> ${bodyArmor}</li>
                     <li><strong>Primary Weapon:</strong> ${primaryWeapon}</li>
                     <li><strong>Secondary Weapon:</strong> ${secondaryWeapon}</li>
-                    <li><strong>Rocket Launcher:</strong> ${rocketLauncher}</li>
                     <li><strong>Grenade:</strong> ${grenade}</li>
                     <li><strong>Gadget:</strong> ${gadget}</li>
+                    <li><strong>Rocket Launcher:</strong> ${rocketLauncher}</li> <!-- Display rocket launcher -->
                     <li><strong>Camo Uniform:</strong> ${camoUniform}</li>
                     <li><strong>Style of Clothes:</strong> ${style}</li>
                 </ul>
