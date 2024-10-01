@@ -159,31 +159,16 @@
             const grenade = getRandomItem(faction === "All" ? grenades.Western.concat(grenades.Soviet) : grenades[faction]);
             const gadget = getRandomItem(faction === "All" ? gadgets.Western.concat(gadgets.Soviet) : gadgets[faction]);
         
-            const rocketLauncher = selectedClass === "Grenadier" 
-                ? getRandomItem(faction === "All" ? rocketLaunchers.Western.LightAT.concat(rocketLaunchers.Soviet.LightAT) : rocketLaunchers[faction].LightAT) 
-                : selectedClass === "AntiTank" 
-                    ? getRandomItem(faction === "All" ? rocketLaunchers.Western.HeavyAT.concat(rocketLaunchers.Soviet.HeavyAT) : rocketLaunchers[faction].HeavyAT) 
-                    : '';
+            let rocketLauncher = '';
+            if (selectedClass === "Grenadier") {
+                rocketLauncher = getRandomItem(faction === "All" ? rocketLaunchers.Western.LightAT.concat(rocketLaunchers.Soviet.LightAT) : rocketLaunchers[faction].LightAT);
+            } else if (selectedClass === "AntiTank") {
+                rocketLauncher = getRandomItem(faction === "All" ? rocketLaunchers.Western.HeavyAT.concat(rocketLaunchers.Soviet.HeavyAT) : rocketLaunchers[faction].HeavyAT);
+            }
         
             const camoUniform = getRandomItem(faction === "All" ? clothes.Western.concat(clothes.Soviet) : clothes[faction]);
             const style = getRandomItem(faction === "All" ? clothesStyle.Western.concat(clothesStyle.Soviet) : clothesStyle[faction]);
-
-    document.getElementById("loadout").innerHTML = `
-        <h2>Your ${faction === "All" ? "Mixed Faction" : faction} ${selectedClass} Loadout:</h2>
-        <ul>
-            <li><strong>Helmet:</strong> ${helmet}</li>
-            <li><strong>Body Armor:</strong> ${bodyArmor}</li>
-            <li><strong>Primary Weapon:</strong> ${primaryWeapon}</li>
-            <li><strong>Secondary Weapon:</strong> ${secondaryWeapon}</li>
-            <li><strong>Grenade:</strong> ${grenade}</li>
-            <li><strong>Gadget:</strong> ${gadget}</li>
-            <li><strong>Rocket Launcher:</strong> ${rocketLauncher}</li>
-            <li><strong>Camo Uniform:</strong> ${camoUniform}</li>
-            <li><strong>Style of Clothes:</strong> ${style}</li>
-        </ul>
-    `;
-}
-
+        
             document.getElementById("loadout").innerHTML = `
                 <h2>Your ${faction === "All" ? "Mixed Faction" : faction} ${selectedClass} Loadout:</h2>
                 <ul>
@@ -193,12 +178,9 @@
                     <li><strong>Secondary Weapon:</strong> ${secondaryWeapon}</li>
                     <li><strong>Grenade:</strong> ${grenade}</li>
                     <li><strong>Gadget:</strong> ${gadget}</li>
-                    <li><strong>Rocket Launcher:</strong> ${rocketLauncher}</li>
+                    ${rocketLauncher ? `<li><strong>Rocket Launcher:</strong> ${rocketLauncher}</li>` : ''}
                     <li><strong>Camo Uniform:</strong> ${camoUniform}</li>
                     <li><strong>Style of Clothes:</strong> ${style}</li>
                 </ul>
             `;
         }
-    </script>
-</body>
-</html>
