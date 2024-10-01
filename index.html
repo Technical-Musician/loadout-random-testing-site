@@ -131,10 +131,21 @@
             Soviet: ["Ratnik Combat Suit", "Gorka Suit", "Sniper Suit", "Soviet BDU", "Winter Combat Uniform", "Spetsnaz Assault Suit"]
         };
 
+        const rocketLaunchers = {
+            Western: {
+                LightAT: ["M72 LAW", "AT4", "Panzerfaust 3"],
+                HeavyAT: ["M47 Dragon", "Javelin", "Carl Gustaf M2", "NLAW"]
+            },
+            Soviet: {
+                LightAT: ["RPG-18", "RPG-22", "RPG-26"],
+                HeavyAT: ["RPG-7", "RPG-29", "RPG-30"]
+            }
+        };
+        
         function getRandomItem(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
-
+                    return arr[Math.floor(Math.random() * arr.length)];
+        }:
+        
         function generateLoadout() {
             const faction = document.getElementById("faction").value;
             const selectedClass = document.getElementById("class").value;
@@ -148,6 +159,18 @@
             const camoUniform = getRandomItem(faction === "All" ? clothes.Western.concat(clothes.Soviet) : clothes[faction]);
             const style = getRandomItem(faction === "All" ? clothesStyle.Western.concat(clothesStyle.Soviet) : clothesStyle[faction]);
 
+            let rocketLauncher = '';
+
+            if (selectedClass === "Grenadier") {
+                rocketLauncher = getRandomItem(faction === "All" 
+                    ? rocketLaunchers.Western.LightAT.concat(rocketLaunchers.Soviet.LightAT) 
+                    : rocketLaunchers[faction].LightAT);
+            } else if (selectedClass === "AntiTank") {
+                rocketLauncher = getRandomItem(faction === "All" 
+                    ? rocketLaunchers.Western.HeavyAT.concat(rocketLaunchers.Soviet.HeavyAT) 
+                    : rocketLaunchers[faction].HeavyAT);
+            }
+
             document.getElementById("loadout").innerHTML = `
                 <h2>Your ${faction === "All" ? "Mixed Faction" : faction} ${selectedClass} Loadout:</h2>
                 <ul>
@@ -155,6 +178,7 @@
                     <li><strong>Body Armor:</strong> ${bodyArmor}</li>
                     <li><strong>Primary Weapon:</strong> ${primaryWeapon}</li>
                     <li><strong>Secondary Weapon:</strong> ${secondaryWeapon}</li>
+                    <li><strong>Rocket Launcher:</strong> ${rocketLauncher}</li>
                     <li><strong>Grenade:</strong> ${grenade}</li>
                     <li><strong>Gadget:</strong> ${gadget}</li>
                     <li><strong>Camo Uniform:</strong> ${camoUniform}</li>
